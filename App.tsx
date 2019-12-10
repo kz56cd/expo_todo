@@ -6,6 +6,9 @@ import {
   StatusBar, 
   Platform, 
   FlatList,
+  TextInput,
+  Button,
+  KeyboardAvoidingView,
   ScrollView 
 } from 'react-native';
 
@@ -20,6 +23,7 @@ interface Props {
 interface State {
   todo: { index: number; title: string; done: boolean }[];
   currentIndex: number;
+  inputText: string;
 }
 
 // export default function App() {
@@ -29,35 +33,61 @@ export default class App extends React.Component<Props, State> {
     super(props)
     // // state初期化
     this.state = {
-      todo: [
-        {index: 1, title: "原稿を書く", done: false},
-        {index: 2, title: "犬の散歩をする", done: false}
-      ],
-      currentIndex: 2
+      todo: [],
+      currentIndex: 2,
+      inputText: "",
     }
+  }
+
+  // TODOリストへの追加処理
+  private onAddItem = () => {
+    const title = this.state.inputText
+    if (title == "") {
+      return
+    }
+
+    const index = this.state.currentIndex + 1
+    const newTodo = {index: index, title: title, done: false}
+    const todo = [...this.state.todo, newTodo]
+    this.setState({
+      todo: todo,
+      currentIndex: index,
+      inputText: ""
+    })
   }
 
   render() {
     return (
-      <View style={styles.container}>
+      <KeyboardAvoidingView style={styles.container} behavior="padding">
         <View style={styles.filter}>
           <Text>Filterがここに配置されます</Text>
         </View>
-        <ScrollView style={styles.todoList}>
 
+        {/* リスト */}
+        <ScrollView style={styles.todoList}>
           <FlatList data={this.state.todo}
             renderItem={({item}) => <Text>{item.title}</Text>}
             keyExtractor={(item, index) => "todo_" + item.index} 
           />
-
-
-          <Text>Todoリストがここに配置されます??</Text>
         </ScrollView>
+
+        {/* テキスト入力欄 */}
         <View style={styles.input}>
-          <Text>テキスト入力がここに配置されます</Text>
+          <TextInput 
+            onChangeText={(text) => this.setState({inputText: text})}
+            value={this.state.inputText}
+            style={styles.inputText}
+          />
+          
+          <Button
+            onPress={this.onAddItem}
+            title="Add"
+            color="#841584"
+            style={styles.inputButton}
+          />
+
         </View>
-        <Text>Todo App!</Text>
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }
@@ -71,12 +101,22 @@ const styles = StyleSheet.create({
     // justifyContent: 'center',
   },
   filter: {
-    height: 30
+    height: 30,
   },
   todoList: {
-    flex: 1
+    flex: 1,
   },
   input: {
-    height: 30
-  }
+    height: 30,
+    flexDirection: 'row',
+    marginBottom: 60,
+  },
+  inputText: {
+    flex: 1,
+    backgroundColor: '#e0e0e0',
+    marginLeft: 10,
+  },
+  inputButton: {
+    width: 100,
+  },
 });
