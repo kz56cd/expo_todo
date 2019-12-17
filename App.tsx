@@ -33,7 +33,6 @@ interface State {
   currentIndex: number;
   inputText: string;
   filterText: string;
-  count: number;
 }
 
 // functional component( = stateがなくpropのみ備えるコンポーネント) として用意
@@ -61,7 +60,6 @@ export default class App extends React.Component<Props, State> {
       currentIndex: 2,
       inputText: '',
       filterText: '',
-      count: 0,
     }
 
     this.onAddItem.bind(this)
